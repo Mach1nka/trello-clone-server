@@ -1,0 +1,27 @@
+# Файлы и папки операционной системы
+.DS_Store
+Thumbs.db
+
+# Файлы редактора
+.idea
+*.sublime*
+.vscode
+.git
+.husky
+
+# Архивы
+.zip
+.rar
+
+# Вспомогательные файлы
+*.log*
+node_modules/
+npm-debug.*
+
+# Папка с собранными файлами проекта
+public/
+build/
+prod/
+dist/
+bundle.js
+bundle.js.map
