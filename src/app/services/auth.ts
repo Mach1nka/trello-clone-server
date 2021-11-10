@@ -14,13 +14,13 @@ async function loginService(reqBody: AuthData): Promise<UserInDB> {
   const user: UserInDB | null = await User.findOne({ login });
 
   if (!user) {
-    throw new InvalidCredentials();
+    throw new InvalidCredentials(undefined, 403);
   }
 
   const isPasswordEqual = bcrypt.compareSync(password, user.password);
 
   if (!isPasswordEqual) {
-    throw new InvalidCredentials();
+    throw new InvalidCredentials(undefined, 403);
   }
 
   return user;

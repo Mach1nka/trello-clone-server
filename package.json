@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint ./src --ext .js,.ts --fix",
-    "build:server": "tsc --build ./tsconfig.json",
-    "dev:server": "nodemon --config ./nodemon.json"
+    "build": "tsc --build ./tsconfig.json",
+    "dev": "nodemon --config ./nodemon.json"
   },
   "repository": {
     "type": "git",
