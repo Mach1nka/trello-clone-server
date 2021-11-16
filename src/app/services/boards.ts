@@ -117,7 +117,7 @@ const shareBoardService = async (
   }
 
   if (isUserExist) {
-    throw new AlreadyExists('', 409);
+    throw new AlreadyExists('The card has already shared', 409);
   }
 
   await Board.findByIdAndUpdate(boardId, {
