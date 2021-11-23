@@ -40,6 +40,7 @@ const getColumnsService = async (
   const columnsArr = await Column.find({ boardId });
 
   if (columnsArr.length) {
+    columnsArr.sort((a, b) => a.position - b.position);
     const preparedArr: FilteredColumn[] = columnsArr.map((el) => ({
       id: String(el._id),
       name: el.name,

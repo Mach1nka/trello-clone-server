@@ -9,7 +9,7 @@ const jwtCreator = (login: string, userId: mongoose.Types.ObjectId): string => {
       userId,
     },
     KEYS.JWT_SECRET_KEY,
-    { expiresIn: '1m' }
+    { expiresIn: '10m' }
   )}`;
   return token;
 };
