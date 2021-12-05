@@ -18,7 +18,6 @@ router.post(
   [
     check('boardId', 'Board Id is required').exists(),
     check('name', 'Name is required').exists(),
-    check('position', 'Position is required').exists().isNumeric(),
     jwtAuthenticate,
   ],
   createNewColumn

@@ -37,10 +37,9 @@ interface BodyForDeleteColumn {
 const getColumnsService = async (
   boardId: string
 ): Promise<FilteredColumn[]> => {
-  const columnsArr = await Column.find({ boardId });
+  const columnsArr = await Column.find({ boardId }).sort({ position: 1 });
 
   if (columnsArr.length) {
-    columnsArr.sort((a, b) => a.position - b.position);
     const preparedArr: FilteredColumn[] = columnsArr.map((el) => ({
       id: String(el._id),
       name: el.name,
@@ -55,52 +54,24 @@ const getColumnsService = async (
 const createColumnService = async (
   reqBody: BodyForCreatColumn
 ): Promise<FilteredColumn> => {
-  const { position, name, boardId } = reqBody;
+  const { name, boardId } = reqBody;
+
+  const columnsWithoutNew = await Column.find({ boardId });
 
   const newColumn = Column.build({
     boardId,
     name,
-    position: Number(position),
+    position: columnsWithoutNew.length,
   });
 
-  await newColumn.save();
-  const columnsData = await Column.find({ boardId });
-  const bulkArr: BulkUpdate<BulkPosition>[] = [];
+  const createdColumn = await newColumn.save();
 
-  columnsData.sort((a, b) => a.position - b.position);
-  const elementsWithUpdatedPos: FilteredColumn[] = columnsData.map(
-    (el, idx) => ({
-      id: String(el._id),
-      name: el.name,
-      position: idx,
-      boardId: el.boardId,
-    })
-  );
-
-  elementsWithUpdatedPos.forEach((el) => {
-    bulkArr.push({
-      updateOne: {
-        filter: { _id: el.id },
-        update: { position: el.position },
-      },
-    });
-  });
-
-  await Column.bulkWrite(bulkArr);
-  const createdColumn = await Column.findById(newColumn._id);
-
-  if (!createdColumn) {
-    throw new NotFound();
-  }
-
-  const preparedData: FilteredColumn = {
+  return {
     id: String(createdColumn._id),
     boardId: createdColumn.boardId,
     name: createdColumn.name,
     position: createdColumn.position,
   };
-
-  return preparedData;
 };
 
 const updateNameService = async (
@@ -117,14 +88,12 @@ const updateNameService = async (
     throw new NotFound();
   }
 
-  const preparedData = {
+  return {
     id: String(renamedColumn._id),
     boardId: renamedColumn.boardId,
     name: renamedColumn.name,
     position: renamedColumn.position,
   };
-
-  return preparedData;
 };
 
 const updatePositionService = async (
@@ -133,8 +102,7 @@ const updatePositionService = async (
   const { columnId, boardId, newPosition } = reqBody;
   const bulkArr: BulkUpdate<BulkPosition>[] = [];
 
-  const columnsArr = await Column.find({ boardId });
-  columnsArr.sort((a, b) => a.position - b.position);
+  const columnsArr = await Column.find({ boardId }).sort({ position: 1 });
 
   const indexOldEl = columnsArr.findIndex(
     (el) => el._id.toString() === columnId
